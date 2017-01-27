@@ -1,14 +1,12 @@
 ---
+name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
 provider:
   name: azure
   waagent:
-    version: 2.0.4
+    version: 2.0.14
 bootstrapper:
-  mirror: http://httpredir.debian.org/debian/
+  mirror: http://deb.debian.org/debian/
   workspace: /target
-image:
-  name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
-  description: Debian {system.release} {system.architecture}
 system:
   release: wheezy
   architecture: amd64
@@ -17,16 +15,22 @@ system:
   locale: en_US
   timezone: UTC
 volume:
-  backing: raw
+  backing: vhd
   partitions:
     type: msdos
-    boot:
-      filesystem: ext2
-      size: 32MiB
     root:
       filesystem: ext4
-      size: 7GiB
-packages: {}
+      size: 10GiB
+packages:
+  components:
+  - main
+  - contrib
+  - non-free
+  preferences:
+    backport-kernel:
+    - package: linux-image-* initramfs-tools
+      pin: release n=wheezy-backports
+      pin-priority: 500
 plugins:
   ntp:
     servers:

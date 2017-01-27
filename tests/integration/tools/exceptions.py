@@ -1,4 +1,0 @@
-
-
-class SocketReadTimeout(Exception):
-	pass

@@ -9,14 +9,14 @@ Selecting tests
 ---------------
 To run one specific test suite simply append the module path to tox:
 
-.. code:: sh
+.. code-block:: sh
 
-	$ tox -e unit tests.unit.releases_tests
+    $ tox -e unit tests.unit.releases_tests
 
 Specific tests can be selected by appending the function name with a colon
 to the modulepath -- to run more than one tests, simply attach more arguments.
 
 
-.. code:: sh
+.. code-block:: sh
 
-	$ tox -e unit tests.unit.releases_tests:test_lt tests.unit.releases_tests:test_eq
+    $ tox -e unit tests.unit.releases_tests:test_lt tests.unit.releases_tests:test_eq

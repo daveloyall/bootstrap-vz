@@ -12,10 +12,10 @@ Start by creating an ``__init__.py`` in your plugin folder.
 The only obligatory function you need to implement is ``resolve_tasks()``.
 This function adds tasks to be run to the tasklist:
 
-.. code:: python
+.. code-block:: python
 
-	def resolve_tasks(taskset, manifest):
-		taskset.add(tasks.DoSomething)
+    def resolve_tasks(taskset, manifest):
+        taskset.add(tasks.DoSomething)
 
 The manifest variable holds the manifest the user specified,
 with it you can determine settings for your plugin and e.g.
@@ -23,17 +23,17 @@ check of which release of Debian bootstrap-vz will create an image.
 
 A task is a class with a static ``run()`` function and some meta-information:
 
-.. code:: python
+.. code-block:: python
 
-	class DoSomething(Task):
-		description = 'Doing something'
-		phase = phases.volume_preparation
-		predecessors = [PartitionVolume]
-		successors = [filesystem.Format]
+    class DoSomething(Task):
+        description = 'Doing something'
+        phase = phases.volume_preparation
+        predecessors = [PartitionVolume]
+        successors = [filesystem.Format]
 
-		@classmethod
-		def run(cls, info):
-			pass
+        @classmethod
+        def run(cls, info):
+            pass
 
 To read more about tasks and their ordering, check out the section on
 `how bootstrap-vz works <index.html#tasks>`__.
@@ -46,10 +46,10 @@ process. If you created temporary files for example, you can add a task to the
 rollback taskset that deletes those files, you might even already have it because
 you run it after an image has been successfully bootstrapped:
 
-.. code:: python
+.. code-block:: python
 
-	def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
-		counter_task(taskset, tasks.DoSomething, tasks.UndoSomething)
+    def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
+        counter_task(taskset, tasks.DoSomething, tasks.UndoSomething)
 
 In  ``resolve_rollback_tasks()`` you have access to the taskset
 (this time it contains tasks that will be run during rollback), the manifest, and
@@ -63,19 +63,18 @@ running through the completed tasklist and checking each completed task.
 You can also specify a ``validate_manifest()`` function.
 Typically it looks like this:
 
-.. code:: python
+.. code-block:: python
 
-	def validate_manifest(data, validator, error):
-		import os.path
-		schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
-		validator(data, schema_path)
+    def validate_manifest(data, validator, error):
+        from bootstrapvz.common.tools import rel_path
+        validator(data, rel_path(__file__, 'manifest-schema.yml'))
 
 This code validates the manifest against a schema in your plugin folder.
 The schema is a `JSON schema <http://json-schema.org/>`__, since bootstrap-vz
 supports `yaml <http://yaml.org/>`__, you can avoid a lot of curly braces
 quotes:
 
-.. code:: yaml
+.. code-block:: yaml
 
   $schema: http://json-schema.org/draft-04/schema#
   title: Example plugin manifest
@@ -110,23 +109,23 @@ specific to your use-case or when the plugin contains proprietary code that you
 would not like to share.
 They integrate with bootstrap-vz by exposing an entry-point through ``setup.py``:
 
-.. code:: python
+.. code-block:: python
 
-	setup(name='example-plugin',
-	      version=0.9.5,
-	      packages=find_packages(),
-	      include_package_data=True,
-	      entry_points={'bootstrapvz.plugins': ['plugin_name = package_name.module_name']},
-	      install_requires=['bootstrap-vz >= 0.9.5'],
-	      )
+    setup(name='example-plugin',
+          version=0.9.5,
+          packages=find_packages(),
+          include_package_data=True,
+          entry_points={'bootstrapvz.plugins': ['plugin_name = package_name.module_name']},
+          install_requires=['bootstrap-vz >= 0.9.5'],
+          )
 
 Beyond ``setup.py`` the package might need a ``MANIFEST.in`` so that assets
 like ``manifest-schema.yml`` are included when the package is built:
 
-.. code::
+.. code-block:: text
 
-	include example/manifest-schema.yml
-	include example/README.rst
+    include example/manifest-schema.yml
+    include example/README.rst
 
 To test your package from source you can run ``python setup.py develop``
 to register the package so that bootstrap-vz can find the entry-point of your
@@ -141,6 +140,6 @@ Some plugins may not find their way to the python package index
 (especially if it's in a private repo). They can of course still be installed
 using pip:
 
-.. code:: sh
+.. code-block:: sh
 
-	pip install git+ssh://git@github.com/username/repo#egg=plugin_name
+    pip install git+ssh://git@github.com/username/repo#egg=plugin_name

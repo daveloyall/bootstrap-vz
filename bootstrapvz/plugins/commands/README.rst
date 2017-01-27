@@ -23,7 +23,8 @@ Example
 ~~~~~~~
 
 Create an empty `index.html` in `/var/www` and delete all locales except english.
-.. code:: yaml
+
+.. code-block:: yaml
 
   commands:
     commands:
